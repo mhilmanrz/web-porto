@@ -1,6 +1,10 @@
-import { createContext, useContext, useCallback } from 'react'
-import { projects as defaultProjects } from '../content/projects/projects'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import {
+  collection, doc, onSnapshot,
+  setDoc, updateDoc, deleteDoc, writeBatch,
+} from 'firebase/firestore'
+import { db } from '../lib/firebase'
+import { projects as seedProjects } from '../content/projects/projects'
 
 /* ─── Context ─── */
 const DataContext = createContext(null)
@@ -13,49 +17,99 @@ export function useData() {
 
 /* ─── Provider ─── */
 export function DataProvider({ children }) {
-  // Projects — null means "use static defaults"
-  const [projectsOverride, setProjectsOverride] = useLocalStorage('portfolio_projects', null)
+  const [projects, setProjects] = useState([])
+  const [resumeUrl, setResumeUrlState] = useState('/assets/resume.pdf')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Resume URL
-  const [resumeUrl, setResumeUrl] = useLocalStorage('portfolio_resume_url', '/assets/resume.pdf')
+  /* Listen to projects collection */
+  useEffect(() => {
+    const unsub = onSnapshot(
+      collection(db, 'projects'),
+      (snap) => {
+        const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        // Sort by `order` field if present, then by title
+        data.sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title))
+        setProjects(data)
+        setLoading(false)
+      },
+      (err) => {
+        console.error('Firestore projects error:', err)
+        setError(err.message)
+        setLoading(false)
+      },
+    )
+    return unsub
+  }, [])
 
-  /* Resolved projects array */
-  const projects = projectsOverride ?? defaultProjects
+  /* Listen to settings/general */
+  useEffect(() => {
+    const unsub = onSnapshot(
+      doc(db, 'settings', 'general'),
+      (snap) => {
+        if (snap.exists()) {
+          setResumeUrlState(snap.data().resumeUrl ?? '/assets/resume.pdf')
+        }
+      },
+      (err) => console.error('Firestore settings error:', err),
+    )
+    return unsub
+  }, [])
 
   /* ─── Project CRUD ─── */
-  const addProject = useCallback(
-    (project) => setProjectsOverride((prev) => [...(prev ?? defaultProjects), project]),
-    [setProjectsOverride],
-  )
+  const addProject = useCallback(async (project) => {
+    const { techStack, ...rest } = project
+    await setDoc(doc(db, 'projects', project.slug), {
+      ...rest,
+      techStack: Array.isArray(techStack) ? techStack : techStack.split(',').map((s) => s.trim()).filter(Boolean),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    })
+  }, [])
 
-  const updateProject = useCallback(
-    (slug, data) =>
-      setProjectsOverride((prev) =>
-        (prev ?? defaultProjects).map((p) => (p.slug === slug ? { ...p, ...data } : p)),
-      ),
-    [setProjectsOverride],
-  )
+  const updateProject = useCallback(async (slug, data) => {
+    const { techStack, ...rest } = data
+    await updateDoc(doc(db, 'projects', slug), {
+      ...rest,
+      techStack: Array.isArray(techStack) ? techStack : techStack.split(',').map((s) => s.trim()).filter(Boolean),
+      updatedAt: new Date().toISOString(),
+    })
+  }, [])
 
-  const deleteProject = useCallback(
-    (slug) =>
-      setProjectsOverride((prev) => (prev ?? defaultProjects).filter((p) => p.slug !== slug)),
-    [setProjectsOverride],
-  )
+  const deleteProject = useCallback(async (slug) => {
+    await deleteDoc(doc(db, 'projects', slug))
+  }, [])
 
-  const resetProjects = useCallback(() => setProjectsOverride(null), [setProjectsOverride])
+  /* Seed default data to Firestore (run once to initialise) */
+  const seedDefaultProjects = useCallback(async () => {
+    const batch = writeBatch(db)
+    seedProjects.forEach((p, i) => {
+      batch.set(doc(db, 'projects', p.slug), {
+        ...p,
+        order: i,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+    })
+    await batch.commit()
+  }, [])
+
+  /* ─── Resume ─── */
+  const setResumeUrl = useCallback(async (url) => {
+    await setDoc(doc(db, 'settings', 'general'), { resumeUrl: url }, { merge: true })
+  }, [])
 
   return (
     <DataContext.Provider
       value={{
-        /* Data */
         projects,
         resumeUrl,
-        /* Project CRUD */
+        loading,
+        error,
         addProject,
         updateProject,
         deleteProject,
-        resetProjects,
-        /* Resume */
+        seedDefaultProjects,
         setResumeUrl,
       }}
     >

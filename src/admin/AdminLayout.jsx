@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
-import AdminLogin from './AdminLogin'
-
-const SESSION_KEY = 'portfolio_admin_auth'
-const PIN = import.meta.env.VITE_ADMIN_PIN || 'admin123'
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth'
+import { auth } from '../lib/firebase'
 
 const NAV = [
   {
@@ -36,7 +38,92 @@ const NAV = [
   },
 ]
 
-function Sidebar({ collapsed, onCollapse, onLogout }) {
+/* ── Login Screen ── */
+function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      // onAuthStateChanged in parent will handle the rest
+    } catch (err) {
+      const msg = {
+        'auth/invalid-credential': 'Email atau password salah.',
+        'auth/user-not-found': 'Akun tidak ditemukan.',
+        'auth/wrong-password': 'Password salah.',
+        'auth/too-many-requests': 'Terlalu banyak percobaan. Coba lagi nanti.',
+        'auth/invalid-email': 'Format email tidak valid.',
+      }[err.code] ?? 'Login gagal. Coba lagi.'
+      setError(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0d1117] px-4">
+      <div className="w-full max-w-sm">
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-[#3b82f6] flex items-center justify-center text-white font-heading font-bold text-xl mb-4">
+            MHR
+          </div>
+          <h1 className="font-heading font-bold text-2xl text-white">Admin Panel</h1>
+          <p className="text-[#8b949e] text-sm mt-1">Masuk dengan akun admin kamu</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="admin-email" className="block text-sm font-medium text-[#8b949e] mb-1.5">
+              Email
+            </label>
+            <input
+              id="admin-email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setError('') }}
+              placeholder="admin@email.com"
+              className="w-full px-4 py-3 rounded-xl bg-[#161b22] border border-[#30363d] text-white placeholder-[#6e7681] focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 focus:border-[#3b82f6] transition-colors"
+            />
+          </div>
+          <div>
+            <label htmlFor="admin-password" className="block text-sm font-medium text-[#8b949e] mb-1.5">
+              Password
+            </label>
+            <input
+              id="admin-password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setError('') }}
+              placeholder="••••••••"
+              className="w-full px-4 py-3 rounded-xl bg-[#161b22] border border-[#30363d] text-white placeholder-[#6e7681] focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 focus:border-[#3b82f6] transition-colors"
+            />
+          </div>
+          {error && (
+            <p className="text-sm text-red-400 bg-red-500/10 px-3 py-2 rounded-lg">{error}</p>
+          )}
+          <button
+            type="submit"
+            disabled={!email || !password || loading}
+            className="w-full py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold transition-colors"
+          >
+            {loading ? 'Masuk…' : 'Masuk'}
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+/* ── Sidebar ── */
+function Sidebar({ collapsed, onCollapse, onLogout, userEmail }) {
   return (
     <aside
       className={[
@@ -89,8 +176,13 @@ function Sidebar({ collapsed, onCollapse, onLogout }) {
         ))}
       </nav>
 
-      {/* Footer actions */}
+      {/* User + Footer */}
       <div className="px-2 py-4 border-t border-[#30363d] space-y-1">
+        {!collapsed && userEmail && (
+          <p className="text-[10px] text-[#6e7681] px-3 mb-2 truncate" title={userEmail}>
+            {userEmail}
+          </p>
+        )}
         <Link
           to="/"
           target="_blank"
@@ -115,91 +207,36 @@ function Sidebar({ collapsed, onCollapse, onLogout }) {
   )
 }
 
-/* ─── Login Screen ─── */
-function LoginScreen({ onSuccess }) {
-  const [pin, setPin] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setTimeout(() => {
-      if (pin === PIN) {
-        sessionStorage.setItem(SESSION_KEY, 'true')
-        onSuccess()
-      } else {
-        setError('PIN salah. Coba lagi.')
-        setPin('')
-      }
-      setLoading(false)
-    }, 350)
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0d1117] px-4">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-[#3b82f6] flex items-center justify-center text-white font-heading font-bold text-xl mb-4">
-            MHR
-          </div>
-          <h1 className="font-heading font-bold text-2xl text-white">Admin Panel</h1>
-          <p className="text-[#8b949e] text-sm mt-1">Masukkan PIN untuk melanjutkan</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="admin-pin" className="block text-sm font-medium text-[#8b949e] mb-1.5">
-              PIN
-            </label>
-            <input
-              id="admin-pin"
-              type="password"
-              autoComplete="current-password"
-              value={pin}
-              onChange={(e) => { setPin(e.target.value); setError('') }}
-              placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl bg-[#161b22] border border-[#30363d] text-white placeholder-[#6e7681] focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 focus:border-[#3b82f6] text-center text-2xl tracking-widest transition-colors"
-            />
-            {error && (
-              <p className="mt-1.5 text-xs text-red-400 text-center">{error}</p>
-            )}
-          </div>
-          <button
-            type="submit"
-            disabled={!pin || loading}
-            className="w-full py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold transition-colors"
-          >
-            {loading ? 'Memeriksa…' : 'Masuk'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-xs text-[#6e7681]">
-          PIN default: <code className="text-[#3b82f6]">admin123</code>
-          <br />Ubah via <code className="text-[#3b82f6]">VITE_ADMIN_PIN</code> di .env
-        </p>
-      </div>
-    </div>
-  )
-}
-
-/* ─── Layout (single source of truth for auth state) ─── */
+/* ── Layout (single auth source of truth) ── */
 export default function AdminLayout() {
-  // Auth state lives HERE — single source of truth
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === 'true')
+  const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
 
-  const handleLogin = () => setAuthed(true)
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u)
+      setAuthLoading(false)
+    })
+    return unsub
+  }, [])
 
-  const handleLogout = () => {
-    sessionStorage.removeItem(SESSION_KEY)
-    setAuthed(false)
+  const handleLogout = async () => {
+    await signOut(auth)
     navigate('/admin')
   }
 
-  if (!authed) {
-    return <LoginScreen onSuccess={handleLogin} />
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0d1117]">
+        <div className="w-8 h-8 rounded-full border-2 border-[#3b82f6] border-t-transparent animate-spin" />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <LoginScreen />
   }
 
   return (
@@ -208,6 +245,7 @@ export default function AdminLayout() {
         collapsed={collapsed}
         onCollapse={() => setCollapsed((v) => !v)}
         onLogout={handleLogout}
+        userEmail={user.email}
       />
       <main className="flex-1 overflow-y-auto">
         <Outlet />
