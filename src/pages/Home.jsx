@@ -85,7 +85,7 @@ function Hero() {
           >
             Hi, I'm{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0f2d52] to-[#3b82f6] dark:from-[#3b82f6] dark:to-[#60a5fa]">
-              Hilman Riski
+              Moh Hilman Riski
             </span>
           </motion.h1>
 
@@ -96,7 +96,7 @@ function Hero() {
             custom={2}
             className="text-lg sm:text-xl text-[#0f2d52]/80 dark:text-[#8b949e] mb-4 font-medium"
           >
-            Fresh IT Graduate · Product Operations · IT Business Analyst · Full-Stack Developer
+            Fresh Graduate Information Technology · Junior Product Operations · Junior Business Analyst · Junior Full-Stack Developer
           </motion.p>
 
           <motion.p
@@ -106,7 +106,7 @@ function Hero() {
             custom={3}
             className="text-[#64748b] dark:text-[#8b949e] mb-9 leading-relaxed max-w-lg"
           >
-            Based in Jakarta, Indonesia. I bridge the gap between technology and business — building
+            Based in Jakarta, Indonesia. Bridge the gap between technology and business building
             thoughtful products that solve real problems.
           </motion.p>
 
@@ -157,16 +157,54 @@ function Hero() {
 
 /* ---------- About Snapshot ---------- */
 function AboutSnapshot() {
-  const stats = [
-    { label: 'Projects Completed', value: '10+' },
-    { label: 'Tech Stack', value: '8+' },
-    { label: 'Bootcamp', value: 'Dicoding #12' },
-    { label: 'Location', value: 'Jakarta' },
+  const roles = [
+    {
+      id: 'product-ops',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+        </svg>
+      ),
+      title: 'Product Operations',
+      desc: 'Mengoptimalkan alur kerja produk dari ideasi hingga delivery. Koordinasi lintas tim, manajemen backlog, dan memastikan produk berjalan sesuai target bisnis.',
+      skills: ['Agile / Scrum', 'Trello', 'Product Roadmap', 'Stakeholder Mgmt'],
+      color: 'from-blue-500/10 to-indigo-500/10 dark:from-blue-500/15 dark:to-indigo-500/15',
+      border: 'border-blue-200 dark:border-blue-900/60',
+      icon_bg: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
+    },
+    // {
+    //   id: 'business-analyst',
+    //   icon: (
+    //     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+    //       <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    //     </svg>
+    //   ),
+    //   title: 'IT Business Analyst',
+    //   desc: 'Menjembatani kebutuhan bisnis dengan solusi teknologi. Analisis proses, requirement gathering, dan mengubah masalah bisnis menjadi spesifikasi teknis yang actionable.',
+    //   skills: ['BRD / SRS', 'BPMN', 'Use Case', 'Data Analysis'],
+    //   color: 'from-violet-500/10 to-purple-500/10 dark:from-violet-500/15 dark:to-purple-500/15',
+    //   border: 'border-violet-200 dark:border-violet-900/60',
+    //   icon_bg: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',
+    // },
+    {
+      id: 'fullstack-dev',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      ),
+      title: 'Full-Stack Developer',
+      desc: 'Membangun aplikasi web end-to-end, UI yang intuitif hingga API dan database.',
+      skills: ['React', 'Node.js', 'Laravel', 'PostgreSQL'],
+      color: 'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/15 dark:to-teal-500/15',
+      border: 'border-emerald-200 dark:border-emerald-900/60',
+      icon_bg: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    },
   ]
 
   return (
     <Section id="about" className="border-t border-[#e2e8f0] dark:border-[#30363d]">
-      <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="grid md:grid-cols-2 gap-12 items-start">
         {/* Text */}
         <motion.div
           variants={fadeUp}
@@ -200,24 +238,50 @@ function AboutSnapshot() {
           </Link>
         </motion.div>
 
-        {/* Stats */}
-        <motion.div
-          className="grid grid-cols-2 gap-4"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          custom={1}
-        >
-          {stats.map((stat) => (
-            <Card key={stat.label} className="p-6 text-center">
-              <p className="font-heading font-bold text-2xl text-[#0f2d52] dark:text-[#e6edf3] mb-1">
-                {stat.value}
-              </p>
-              <p className="text-xs text-[#64748b] dark:text-[#8b949e]">{stat.label}</p>
-            </Card>
+        {/* What I Do Cards */}
+        <div className="flex flex-col gap-4">
+          {roles.map((role, i) => (
+            <motion.div
+              key={role.id}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              custom={i + 1}
+              className={[
+                'rounded-2xl border p-5 bg-gradient-to-br transition-shadow hover:shadow-md',
+                role.color,
+                role.border,
+              ].join(' ')}
+            >
+              <div className="flex items-start gap-4">
+                {/* Icon */}
+                <div className={['w-11 h-11 rounded-xl flex items-center justify-center shrink-0', role.icon_bg].join(' ')}>
+                  {role.icon}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-heading font-bold text-base text-[#0f2d52] dark:text-[#e6edf3] mb-1">
+                    {role.title}
+                  </h3>
+                  <p className="text-sm text-[#64748b] dark:text-[#8b949e] leading-relaxed mb-3">
+                    {role.desc}
+                  </p>
+                  {/* Skill tags */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {role.skills.map((s) => (
+                      <span
+                        key={s}
+                        className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/70 dark:bg-white/10 text-[#64748b] dark:text-[#8b949e] border border-white/50 dark:border-white/10"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </Section>
   )
