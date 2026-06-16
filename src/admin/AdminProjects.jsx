@@ -3,13 +3,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 
 export default function AdminProjects() {
-  const { projects, deleteProject, resetProjects } = useData()
+  const { projects, deleteProject, loading } = useData()
   const navigate = useNavigate()
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
-  const handleDelete = (slug) => {
-    deleteProject(slug)
-    setConfirmDelete(null)
+  const handleDelete = async (slug) => {
+    setDeleting(true)
+    try {
+      await deleteProject(slug)
+    } catch (err) {
+      alert(`Gagal menghapus: ${err.message}`)
+    } finally {
+      setDeleting(false)
+      setConfirmDelete(null)
+    }
   }
 
   return (
@@ -21,12 +29,6 @@ export default function AdminProjects() {
           <p className="text-[#8b949e] text-sm">{projects.length} project total</p>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={() => { if (window.confirm('Reset ke data default?')) resetProjects() }}
-            className="px-3 py-2 rounded-lg bg-[#30363d] hover:bg-[#3d444d] text-[#8b949e] hover:text-white text-xs transition-colors"
-          >
-            Reset Default
-          </button>
           <button
             onClick={() => navigate('/admin/projects/new')}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#3b82f6] hover:bg-[#2563eb] text-white text-sm font-medium transition-colors"
@@ -118,14 +120,15 @@ export default function AdminProjects() {
           <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-7 max-w-sm w-full mx-4">
             <h3 className="font-heading font-semibold text-lg text-white mb-2">Hapus Project?</h3>
             <p className="text-[#8b949e] text-sm mb-6">
-              Project <span className="font-mono text-[#e6edf3]">"{confirmDelete}"</span> akan dihapus permanen dari localStorage.
+              Project <span className="font-mono text-[#e6edf3]">"{confirmDelete}"</span> akan dihapus permanen dari Firestore.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => handleDelete(confirmDelete)}
-                className="flex-1 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors"
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white text-sm font-semibold transition-colors"
               >
-                Hapus
+                {deleting ? 'Menghapus…' : 'Hapus'}
               </button>
               <button
                 onClick={() => setConfirmDelete(null)}
