@@ -221,12 +221,15 @@ function AboutSnapshot() {
           <p className="text-[#64748b] dark:text-[#8b949e] mb-4 leading-relaxed">
             I'm a fresh Information Technology graduate with a passion for building products that
             matter. My experience spans full-stack development, product operations, and IT business
-            analysis — giving me a holistic view of how software creates business value.
+            analysis, giving me a holistic view of how software creates business value.
           </p>
           <p className="text-[#64748b] dark:text-[#8b949e] mb-6 leading-relaxed">
-            During my time at Dicoding Bootcamp Batch 12, I led the development of an AI-powered
-            learning planner that was selected as a showcase capstone project. I believe great
-            products come from deep user empathy combined with solid technical execution.
+            I have experience in full-stack web development with frameworks like React, Vite, Laravel,
+            and Node.js, along with database management using PostgreSQL, MySQL, and Firebase.
+            I am proficient in using Docker and Git for development, experienced in REST API creation,
+            and familiar with IoT prototyping using Arduino and ESP32. My background also includes
+            strong foundational skills in product planning, user research, and coordinating with cross
+            functional teams.
           </p>
           <Link to="/resume">
             <Button variant="outline" size="md" id="about-view-resume">
