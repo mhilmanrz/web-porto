@@ -96,7 +96,7 @@ function Hero() {
             custom={2}
             className="text-lg sm:text-xl text-[#0f2d52]/80 dark:text-[#8b949e] mb-4 font-medium"
           >
-            Fresh Graduate Information Technology · Junior Product Operations · Junior Business Analyst · Junior Full-Stack Developer
+            Information Technology · Junior Product Operations · Junior Business Analyst · Junior Developer · Junior Software Engineer
           </motion.p>
 
           <motion.p
