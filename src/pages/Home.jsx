@@ -4,6 +4,7 @@ import { useData } from '../context/DataContext'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
+import heroImg from '../assets/hero.png'
 
 /* ---------- animation variants ---------- */
 const fadeUp = {
@@ -13,6 +14,16 @@ const fadeUp = {
     y: 0,
     transition: { duration: 0.5, delay: i * 0.1, ease: 'easeOut' },
   }),
+}
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 48, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { duration: 0.7, delay: 0.3, ease: 'easeOut' },
+  },
 }
 
 /* ---------- Section wrapper ---------- */
@@ -63,92 +74,156 @@ function Hero() {
         className="absolute bottom-1/4 -left-16 w-72 h-72 rounded-full bg-[#0f2d52]/6 blur-3xl dark:bg-[#3b82f6]/4"
       />
 
-      <div className="max-w-6xl mx-auto w-full">
-        <div className="max-w-2xl">
-          <motion.span
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={0}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20 mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse" />
-            Available for opportunities
-          </motion.span>
+      <div className="max-w-6xl mx-auto w-full py-16">
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-          <motion.h1
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={1}
-            className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-[#0f2d52] dark:text-[#e6edf3] leading-[1.15] mb-5"
-          >
-            Hi, I'm{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0f2d52] to-[#3b82f6] dark:from-[#3b82f6] dark:to-[#60a5fa]">
-              Moh Hilman Riski
-            </span>
-          </motion.h1>
+          {/* ── Left: text content ── */}
+          <div>
+            <motion.span
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={0}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#3b82f6]/10 text-[#3b82f6] border border-[#3b82f6]/20 mb-6"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#3b82f6] animate-pulse" />
+              Available for opportunities
+            </motion.span>
 
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={2}
-            className="text-lg sm:text-xl text-[#0f2d52]/80 dark:text-[#8b949e] mb-4 font-medium"
-          >
-            Information Technology · Junior Product Operations · Junior Business Analyst · Junior Developer · Junior Software Engineer
-          </motion.p>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={3}
-            className="text-[#64748b] dark:text-[#8b949e] mb-9 leading-relaxed max-w-lg"
-          >
-            Based in Jakarta, Indonesia. Bridge the gap between technology and business building
-            thoughtful products that solve real problems.
-          </motion.p>
-
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={4}
-            className="flex flex-wrap gap-3"
-          >
-            <Link to="/projects">
-              <Button variant="primary" size="lg" id="hero-view-projects">
-                View Projects
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="outline" size="lg" id="hero-contact">
-                Get In Touch
-              </Button>
-            </Link>
-          </motion.div>
-
-          {/* Tech pills */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={5}
-            className="flex flex-wrap gap-2 mt-10"
-          >
-            {['React', 'Node.js', 'Laravel', 'PostgreSQL', 'Product Analysis'].map((tech) => (
-              <span
-                key={tech}
-                className="px-3 py-1 rounded-full bg-white dark:bg-[#161b22] border border-[#e2e8f0] dark:border-[#30363d] text-xs font-medium text-[#64748b] dark:text-[#8b949e] shadow-sm"
-              >
-                {tech}
+            <motion.h1
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={1}
+              className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-[#0f2d52] dark:text-[#e6edf3] leading-[1.15] mb-5"
+            >
+              Hi, I'm{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0f2d52] to-[#3b82f6] dark:from-[#3b82f6] dark:to-[#60a5fa]">
+                Moh Hilman Riski
               </span>
-            ))}
+            </motion.h1>
+
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={2}
+              className="text-base sm:text-lg text-[#0f2d52]/80 dark:text-[#8b949e] mb-4 font-medium"
+            >
+              Information Technology · Junior Product Operations · Junior Business Analyst · Junior Developer · Junior Software Engineer
+            </motion.p>
+
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={3}
+              className="text-[#64748b] dark:text-[#8b949e] mb-9 leading-relaxed"
+            >
+              Based in Jakarta, Indonesia. Bridge the gap between technology and business building
+              thoughtful products that solve real problems.
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={4}
+              className="flex flex-wrap gap-3"
+            >
+              <Link to="/projects">
+                <Button variant="primary" size="lg" id="hero-view-projects">
+                  View Projects
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button variant="outline" size="lg" id="hero-contact">
+                  Get In Touch
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Tech pills */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              custom={5}
+              className="flex flex-wrap gap-2 mt-10"
+            >
+              {['React', 'Node.js', 'Laravel', 'PostgreSQL', 'Product Analysis'].map((tech) => (
+                <span
+                  key={tech}
+                  className="px-3 py-1 rounded-full bg-white dark:bg-[#161b22] border border-[#e2e8f0] dark:border-[#30363d] text-xs font-medium text-[#64748b] dark:text-[#8b949e] shadow-sm"
+                >
+                  {tech}
+                </span>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* ── Right: photo ── */}
+          <motion.div
+            variants={fadeRight}
+            initial="hidden"
+            animate="visible"
+            className="flex justify-center md:justify-end"
+          >
+            <div className="relative">
+              {/* Outer glow ring */}
+              <div
+                aria-hidden
+                className="absolute -inset-[3px] rounded-3xl bg-gradient-to-br from-[#3b82f6] via-[#0f2d52] to-[#3b82f6] opacity-40 blur-[2px]"
+              />
+              {/* Decorative dot grid — top-left */}
+              <div
+                aria-hidden
+                className="absolute -top-6 -left-6 w-24 h-24 opacity-20 dark:opacity-10"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, #3b82f6 1.5px, transparent 1.5px)',
+                  backgroundSize: '10px 10px',
+                }}
+              />
+              {/* Decorative dot grid — bottom-right */}
+              <div
+                aria-hidden
+                className="absolute -bottom-6 -right-6 w-24 h-24 opacity-20 dark:opacity-10"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, #0f2d52 1.5px, transparent 1.5px)',
+                  backgroundSize: '10px 10px',
+                }}
+              />
+              {/* Photo frame */}
+              <div className="relative w-64 h-80 sm:w-72 sm:h-[380px] md:w-80 md:h-[440px] rounded-3xl overflow-hidden border border-white/40 dark:border-white/10 shadow-2xl">
+                <img
+                  src={heroImg}
+                  alt="Moh Hilman Riski"
+                  className="w-full h-full object-cover object-top"
+                />
+                {/* Subtle overlay shimmer at bottom */}
+                <div
+                  aria-hidden
+                  className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#0f2d52]/30 to-transparent"
+                />
+              </div>
+              {/* Floating badge — Available */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.4 }}
+                className="absolute -bottom-4 -left-4 flex items-center gap-2 bg-white dark:bg-[#161b22] border border-[#e2e8f0] dark:border-[#30363d] shadow-lg rounded-xl px-3 py-2"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                <span className="text-xs font-semibold text-[#0f2d52] dark:text-[#e6edf3] whitespace-nowrap">
+                  Open to Work
+                </span>
+              </motion.div>
+            </div>
           </motion.div>
+
         </div>
       </div>
     </section>
