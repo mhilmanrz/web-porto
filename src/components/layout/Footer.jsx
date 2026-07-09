@@ -42,7 +42,7 @@ export default function Footer() {
             Moh Hilman Riski
           </p>
           <p className="text-xs text-[#64748b] dark:text-[#8b949e] mt-0.5">
-            Fresh IT Graduate · Jakarta, Indonesia
+            Informatics Graduate · Jakarta, Indonesia
           </p>
         </div>
 
