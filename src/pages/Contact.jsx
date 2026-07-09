@@ -127,7 +127,7 @@ export default function Contact() {
                 ),
                 label: 'LinkedIn',
                 value: 'Moh Hilman Riski',
-                href: 'https://linkedin.com/in/moh-hilman-riski',
+                href: 'https://linkedin.com/in/mhilmanrizq/',
               },
             ].map((item) => (
               <div key={item.label} className="flex items-start gap-3">
